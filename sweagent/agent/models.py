@@ -172,51 +172,31 @@ class BaseModel:
 
 class OpenAIModel(BaseModel):
     MODELS = {
-        "gpt-3.5-turbo-0125": {
+        "gpt-3.5-turbo": {
             "max_context": 16_385,
-            "cost_per_input_token": 5e-07,
-            "cost_per_output_token": 1.5e-06,
+            "cost_per_input_token": 0,
+            "cost_per_output_token": 0,
         },
-        "gpt-3.5-turbo-1106": {
+        "gpt-4": {
             "max_context": 16_385,
-            "cost_per_input_token": 1.5e-06,
-            "cost_per_output_token": 2e-06,
+            "cost_per_input_token": 0,
+            "cost_per_output_token": 0,
         },
-        "gpt-3.5-turbo-16k-0613": {
-            "max_context": 16_385,
-            "cost_per_input_token": 1.5e-06,
-            "cost_per_output_token": 2e-06,
-        },
-        "gpt-4-32k-0613": {
-            "max_context": 32_768,
-            "cost_per_input_token": 6e-05,
-            "cost_per_output_token": 0.00012,
-        },
-        "gpt-4-0613": {
-            "max_context": 8_192,
-            "cost_per_input_token": 3e-05,
-            "cost_per_output_token": 6e-05,
-        },
-        "gpt-4-1106-preview": {
-            "max_context": 128_000,
-            "cost_per_input_token": 1e-05,
-            "cost_per_output_token": 3e-05,
-        },
-        "gpt-4-0125-preview": {
-            "max_context": 128_000,
-            "cost_per_input_token": 1e-05,
-            "cost_per_output_token": 3e-05,
-        },
+
     }
 
     SHORTCUTS = {
-        "gpt3": "gpt-3.5-turbo-1106",
-        "gpt3-legacy": "gpt-3.5-turbo-16k-0613",
-        "gpt4": "gpt-4-1106-preview",
-        "gpt4-legacy": "gpt-4-0613",
-        "gpt4-0125": "gpt-4-0125-preview",
-        "gpt3-0125": "gpt-3.5-turbo-0125",
+        "gpt3": "gpt-3.5-turbo",
+        "gpt4": "gpt-4",
     }
+
+    def __init__(self, args: ModelArguments, commands: list[Command]):
+        super().__init__(args, commands)
+
+        # Set OpenAI key
+        cfg = config.Config(os.path.join(os.getcwd(), "keys.cfg"))
+        self.client = OpenAI(api_key=cfg["OPENAI_API_KEY"],base_url="http://0.0.0.0:8080/v1")
+
 
     def __init__(self, args: ModelArguments, commands: list[Command]):
         super().__init__(args, commands)
